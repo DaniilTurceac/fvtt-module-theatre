@@ -4,6 +4,9 @@ import { Theatre } from "./scripts/Theatre.js";
 import CONSTANTS from "./scripts/constants/constants.js";
 import { registerKeybindings } from "./scripts/settings.js";
 import Logger from "./scripts/lib/Logger.js";
+import { setupSpotlightSearch } from "./scripts/spotlightIntegration.js";
+
+Logger.debug("register Hooks");
 
 /**
  * Concat helper
@@ -514,8 +517,6 @@ Hooks.on("theatreDockActive", (insertCount) => {
     // The "MyTab" module inserts another element with id "pause". Use querySelectorAll to make sure we catch both
     document.querySelectorAll("#pause").forEach((ele) => KHelpers.addClass(ele, "theatre-centered"));
 
-
-
     if (!game.settings.get(CONSTANTS.MODULE_ID, "autoHideBottom")) {
         return;
     }
@@ -525,8 +526,8 @@ Hooks.on("theatreDockActive", (insertCount) => {
 
         const customSelectors = game.settings.get(CONSTANTS.MODULE_ID, "suppressCustomCss");
         if (customSelectors) {
-            const selectors = customSelectors.split(";").map(selector => selector.trim());
-            selectors.forEach(selector => {
+            const selectors = customSelectors.split(";").map((selector) => selector.trim());
+            selectors.forEach((selector) => {
                 $(selector).addClass("theatre-invisible");
             });
         }
@@ -590,8 +591,8 @@ Hooks.on("theatreSuppression", (suppressed) => {
 
         const customSelectors = game.settings.get(CONSTANTS.MODULE_ID, "suppressCustomCss");
         if (customSelectors) {
-            const selectors = customSelectors.split(";").map(selector => selector.trim());
-            selectors.forEach(selector => {
+            const selectors = customSelectors.split(";").map((selector) => selector.trim());
+            selectors.forEach((selector) => {
                 $(selector).removeClass("theatre-invisible");
             });
         }
@@ -601,8 +602,8 @@ Hooks.on("theatreSuppression", (suppressed) => {
 
         const customSelectors = game.settings.get(CONSTANTS.MODULE_ID, "suppressCustomCss");
         if (customSelectors) {
-            const selectors = customSelectors.split(";").map(selector => selector.trim());
-            selectors.forEach(selector => {
+            const selectors = customSelectors.split(";").map((selector) => selector.trim());
+            selectors.forEach((selector) => {
                 $(selector).addClass("theatre-invisible");
             });
         }
@@ -646,4 +647,9 @@ Hooks.on("getSceneControlButtons", (controls) => {
         const tokenControls = controls.find((group) => group.name === "token").tools;
         tokenControls.push(suppressTheatreTool);
     }
+});
+
+Hooks.on("spotlightOmnisearch.indexBuilt", (INDEX) => {
+    Logger.debug("Adding Theatre to the spotlight search index");
+    setupSpotlightSearch(INDEX);
 });
