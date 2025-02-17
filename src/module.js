@@ -544,20 +544,24 @@ Hooks.once("ready", () => {
         if (game.modules.get("lib-wrapper")) word = "activate";
         throw Logger.error(`Requires the 'libWrapper' module. Please ${word} it.`);
     }
+
     if (!game.modules.get("socketlib")?.active && game.user?.isGM) {
         let word = "install and activate";
         if (game.modules.get("socketlib")) word = "activate";
         throw Logger.error(`Requires the 'socketlib' module. Please ${word} it.`);
     }
+
     if (!game.settings.get(CONSTANTS.MODULE_ID, "autoHideBottom")) {
         return;
     }
+
     if (!game.modules.get("enhancedcombathud")?.active) {
         return;
     }
+
     libWrapper.register(
         CONSTANTS.MODULE_ID,
-        "CombatHudCanvasElement.prototype.toggleMacroPlayers",
+        "ui.ARGON.toggle",
         (wrapped, togg) => {
             if (togg && theatre?.dockActive) {
                 return;
